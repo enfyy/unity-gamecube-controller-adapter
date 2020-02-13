@@ -42,12 +42,12 @@ public class GccStatus
     private void assignValuesFromData()
     {
         //read data and ste vals
-        Left_xVal         = ( ControllerData[4] - 128 )/100; //TODO: fraction float blabla
-        Left_yVal         = ( ControllerData[5] - 128 )/100;
-        Right_xVal        = ( ControllerData[6] - 128 )/100;
-        Right_xVal        = ( ControllerData[7] - 128 )/100;
-        Left_Trigger_Val  = ( ControllerData[7] - 128 )/100;
-        Right_Trigger_Val = ( ControllerData[7] - 128 )/100;
+        Left_xVal         = (float) ( ControllerData[4] - 128 )/100;
+        Left_yVal         = (float) ( ControllerData[5] - 128 )/100;
+        Right_xVal        = (float) ( ControllerData[6] - 128 )/100;
+        Right_yVal        = (float) ( ControllerData[7] - 128 )/100;
+        Left_Trigger_Val  = (float) ( ControllerData[8] - 128 )/100;
+        Right_Trigger_Val = (float) ( ControllerData[9] - 128 )/100;
     }
 
     private bool bitValue(byte b, int offset)
