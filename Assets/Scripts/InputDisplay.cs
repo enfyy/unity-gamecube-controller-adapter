@@ -68,7 +68,7 @@ public class InputDisplay : MonoBehaviour
         }
 
         data += "]";
-        DataText.text = data;
+        DataText.text = " Datastring: " + data;
 
         Vector2 newC = new Vector2(originalCPos.x + input.Right_xVal * scaleFactor, originalCPos.y + input.Right_yVal * scaleFactor); //TODO: move them correctly
         cTransform.position = newC;

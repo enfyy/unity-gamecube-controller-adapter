@@ -46,8 +46,8 @@ public class GccStatus
         Left_yVal         = (float) ( ControllerData[5] - 128 )/100;
         Right_xVal        = (float) ( ControllerData[6] - 128 )/100;
         Right_yVal        = (float) ( ControllerData[7] - 128 )/100;
-        Left_Trigger_Val  = (float) ( ControllerData[8] - 128 )/100;
-        Right_Trigger_Val = (float) ( ControllerData[9] - 128 )/100;
+        Left_Trigger_Val  = (float) ( ControllerData[8] - 28 )/200;
+        Right_Trigger_Val = (float) ( ControllerData[9] - 28 )/200;
     }
 
     private bool bitValue(byte b, int offset)
