@@ -23,6 +23,8 @@ public class InputDisplay : MonoBehaviour
     public GameObject Analog;
     public GameObject C;
 
+    public Dropdown PortDropdown;
+    
     public Text DataText;
     public Text AnalogText;
     public Text CText;
@@ -50,8 +52,8 @@ public class InputDisplay : MonoBehaviour
     {
         if (!Gcc.isReading)
             return;
-        
-        GccStatus input = Gcc.Input();
+
+        GccStatus input = Gcc.Input(PortDropdown.value);
         if (input == null)
             return;
 
@@ -61,7 +63,7 @@ public class InputDisplay : MonoBehaviour
         LAnalog.text = input.Left_Trigger_Val.ToString();
         RAnalog.text = input.Right_Trigger_Val.ToString();
         string data = "[ ";
-        foreach (var databyte in input.ControllerData)
+        foreach (var databyte in GccStatus.ControllerData)
         {
             data += databyte.ToString("X");
             data += " ";

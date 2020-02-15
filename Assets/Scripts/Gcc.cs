@@ -11,7 +11,7 @@ using MonoLibUsb.Transfer;
 public static class Gcc
 {
   public static bool isReading = false; // turn off to stop the thread
-  private static GccStatus currentStatus;
+  private static GccStatus[] ControllerPortData;
   
   private static MonoUsbTransferDelegate controlTransferDelegate;
   private static MonoUsbSessionHandle sessionHandle;
@@ -21,14 +21,19 @@ public static class Gcc
   
   private static byte[] pad_data = new byte[37];
 
-  public static GccStatus Input()
+  public static GccStatus Input(int index)
   {
-    return currentStatus;
+    return ControllerPortData?[index];
   }
 
+  // #################################################################
+  // ## Shuts down the polling and releases interface.              ##
+  // ## Run this before the application exits (OnApplicationQuit)   ##
+  // #################################################################
   public static void Stop()
   {
     isReading = false;
+    Shutdown();
   }
 
   private static bool IsWiiUAdapter(MonoUsbProfile profile)
@@ -135,6 +140,9 @@ public static class Gcc
     }
   }
   
+  // ###########################################################################
+  // ## This function runs in a separate Thread and polls the controller data ##
+  // ##########################################################################
   private static void Read()
   {
     isReading = true;
@@ -148,8 +156,8 @@ public static class Gcc
       {
         result += pad_data[j].ToString("X") + " ";
       }
-      currentStatus = new GccStatus(pad_data);
-      //TODO: mutex 
+      ControllerPortData = GccStatus.ProcessControllerData(pad_data);
+      //TODO: mutex ?
     }
     Debug.Log("Stopping reader thread.");
     Thread.CurrentThread.Abort();

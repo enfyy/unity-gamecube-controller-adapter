@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using MonoLibUsb;
@@ -18,4 +19,12 @@ public class StartScript : MonoBehaviour
         Gcc.Stop();
     }
 
+    public void OnApplicationQuit()
+    {
+        if (Gcc.isReading)
+        {
+            Debug.Log("Force quit Adapter Polling...");
+            Gcc.Stop();
+        }
+    }
 }

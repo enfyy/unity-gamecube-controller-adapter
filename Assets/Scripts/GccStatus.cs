@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GccStatus
 {
-    public byte[] ControllerData;
+    public int PortIndex;
+    public static byte[] ControllerData;
+    public bool IsActive;
     
     public float Left_xVal;
     public float Left_yVal;
@@ -30,92 +33,132 @@ public class GccStatus
     public bool Button_R;
     public bool Button_L;
 
-    public GccStatus(byte[] controllerData)
+    public static GccStatus[] ProcessControllerData(byte[] controllerData)
     {
+        GccStatus[] ports = new GccStatus[4];
         ControllerData = controllerData;
-        assignValuesFromData();
-        Assign_Buttons_A_B_X_Y();
-        Assign_Buttons_DPAD();
-        Assign_Buttons_START_Z_R_L();
+        
+        byte[] port1 = new byte [8];
+        byte[] port2 = new byte [8];
+        byte[] port3 = new byte [8];
+        byte[] port4 = new byte [8];
+            
+        Array.Copy(controllerData, 2, port1, 0, 8);
+        Array.Copy(controllerData, 11, port2, 0, 8);
+        Array.Copy(controllerData, 20, port3, 0, 8);
+        Array.Copy(controllerData, 29, port4, 0, 8);
+        
+        ports[0] = new GccStatus(port1, 1);
+        ports[1] = new GccStatus(port2, 2);
+        ports[2] = new GccStatus(port3, 3);
+        ports[3] = new GccStatus(port4, 4);
+        return ports;
     }
 
-    private void assignValuesFromData()
+    public GccStatus(byte[] controllerPortData, int index)
+    {
+        PortIndex = index;
+        if (!CheckActive(controllerPortData))
+            return;
+        
+        AssignValuesFromData(controllerPortData);
+        Assign_Buttons_A_B_X_Y(controllerPortData);
+        Assign_Buttons_DPAD(controllerPortData);
+        Assign_Buttons_START_Z_R_L(controllerPortData);
+    }
+
+    private bool CheckActive(byte [] controllerPortData)
+    {
+        foreach (var data in controllerPortData)
+        {
+            if (data != 0)
+            {
+                IsActive = true;
+                return true;
+            }
+        }
+
+        IsActive = false;
+        return false;
+    }
+
+    private void AssignValuesFromData(byte [] controllerPortData)
     {
         //read data and ste vals
-        Left_xVal         = (float) ( ControllerData[4] - 128 )/100;
-        Left_yVal         = (float) ( ControllerData[5] - 128 )/100;
-        Right_xVal        = (float) ( ControllerData[6] - 128 )/100;
-        Right_yVal        = (float) ( ControllerData[7] - 128 )/100;
-        Left_Trigger_Val  = (float) ( ControllerData[8] - 28 )/200;
-        Right_Trigger_Val = (float) ( ControllerData[9] - 28 )/200;
+        Left_xVal         = (float) ( controllerPortData[2] - 128 )/100;
+        Left_yVal         = (float) ( controllerPortData[3] - 128 )/100;
+        Right_xVal        = (float) ( controllerPortData[4] - 128 )/100;
+        Right_yVal        = (float) ( controllerPortData[5] - 128 )/100;
+        Left_Trigger_Val  = (float) ( controllerPortData[6] - 28 )/200;
+        Right_Trigger_Val = (float) ( controllerPortData[7] - 28 )/200;
     }
 
-    private bool bitValue(byte b, int offset)
+    private static bool BitValue(byte b, int offset)
     {
         return (b & (1 << offset-1)) != 0;
     }
 
-    public void Assign_Buttons_A_B_X_Y()
+    public void Assign_Buttons_A_B_X_Y(byte [] controllerPortData)
     {
-        byte data = ControllerData[2];
+        byte data = controllerPortData[0];
         
-        if (bitValue(data, 1))
+        if (BitValue(data, 1))
         {
             Button_A = true;
         }
-        if (bitValue(data, 2))
+        if (BitValue(data, 2))
         {
             Button_B = true;
         }
-        if (bitValue(data, 3))
+        if (BitValue(data, 3))
         {
             Button_X = true;
         }
-        if (bitValue(data, 4))
+        if (BitValue(data, 4))
         {
             Button_Y = true;
         }
     }
     
-    public void Assign_Buttons_DPAD()
+    public void Assign_Buttons_DPAD(byte [] controllerPortData)
     {
-        byte data = ControllerData[2];
+        byte data = controllerPortData[0];
         
-        if (bitValue(data, 5))
+        if (BitValue(data, 5))
         {
             Button_LEFT = true;
         }
-        if (bitValue(data, 6))
+        if (BitValue(data, 6))
         {
             Button_RIGHT = true;
         }
-        if (bitValue(data, 7))
+        if (BitValue(data, 7))
         {
             Button_DOWN = true;
         }
-        if (bitValue(data, 8))
+        if (BitValue(data, 8))
         {
             Button_UP = true;
         }
     }
     
-    public void Assign_Buttons_START_Z_R_L()
+    public void Assign_Buttons_START_Z_R_L(byte [] controllerPortData)
     {
-        byte data = ControllerData[3];
+        byte data = controllerPortData[1];
         
-        if (bitValue(data, 1))
+        if (BitValue(data, 1))
         {
             Button_START = true;
         }
-        if (bitValue(data, 2))
+        if (BitValue(data, 2))
         {
             Button_Z = true;
         }
-        if (bitValue(data, 3))
+        if (BitValue(data, 3))
         {
             Button_R = true;
         }
-        if (bitValue(data, 4))
+        if (BitValue(data, 4))
         {
             Button_L = true;
         }
