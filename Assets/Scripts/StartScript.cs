@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using MonoLibUsb;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class StartScript : MonoBehaviour
 {
@@ -12,11 +7,17 @@ public class StartScript : MonoBehaviour
         Debug.Log("Starting Adapter Polling...");
         Gcc.SetUp();
     }
-    
+
     public void StopPolling()
     {
         Debug.Log("Stopping Adapter Polling...");
         Gcc.Stop();
+    }
+    
+    public void CalibrationToggle()
+    {
+        Debug.Log("Toggled Calibration Mode");
+        GccStatus.calibration_mode = !GccStatus.calibration_mode;
     }
 
     public void OnApplicationQuit()
@@ -27,4 +28,6 @@ public class StartScript : MonoBehaviour
             Gcc.Stop();
         }
     }
+
+   
 }

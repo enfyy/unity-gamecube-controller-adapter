@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class InputDisplay : MonoBehaviour
@@ -57,8 +55,8 @@ public class InputDisplay : MonoBehaviour
         if (input == null)
             return;
 
-        AnalogText.text   = "X: " + input.Left_xVal + " || Y: " + input.Left_yVal;
-        CText.text   = "X: " + input.Right_xVal + " || Y: " + input.Right_yVal;
+        AnalogText.text   = "X: " + input.Left_xVal.ToString("0.0000") + " || Y: " + input.Left_yVal.ToString("0.0000");
+        CText.text   = "X: " + input.Right_xVal.ToString("0.0000") + " || Y: " + input.Right_yVal.ToString("0.0000");
         
         LAnalog.text = input.Left_Trigger_Val.ToString();
         RAnalog.text = input.Right_Trigger_Val.ToString();
